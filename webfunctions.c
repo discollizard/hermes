@@ -33,3 +33,31 @@ void bind_socket_or_die(int socket_file_descriptor, struct sockaddr_in* sock_str
 	}
 
 }
+
+void get_client_address_or_die(char* ipv4_destination_pointer, struct sockaddr_in* client_sock_addr, int max_buffer_size){
+		const char* dst_ptr;
+		dst_ptr = inet_ntop(AF_INET, &(client_sock_addr->sin_addr), ipv4_destination_pointer, max_buffer_size);
+		if(dst_ptr == NULL){
+			perror("Failed to get client address: ");
+		}
+}
+
+void handle_connection(){
+	char line_buffer[LINE_BUFFER_SIZE];
+	int read_result;
+
+	memset(line_buffer, 0, LINE_BUFFER_SIZE - 1);
+
+	while((read_result = read(client_fd, line_buffer, LINE_BUFFER_SIZE - 1)) > 0){
+			//could log this in a file later
+			fprintf(stdout, "\n%s\n", line_buffer);
+			fflush(stdout);
+
+			if (line_buffer[line-1] == '\n'){
+				break;
+			}
+
+			memset(line_buffer, 0, LINE_BUFFER_SIZE - 1);
+		}
+
+}

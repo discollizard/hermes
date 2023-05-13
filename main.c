@@ -13,7 +13,6 @@ int main(int argc, char** argv){
 
 	int server_fd, client_fd, line;
 	struct sockaddr_in address;
-	char line_buffer[LINE_BUFFER_SIZE];
 	char return_buffer[LINE_BUFFER_SIZE];
 
 	server_fd = open_socket_or_die();
@@ -32,19 +31,25 @@ int main(int argc, char** argv){
 
 	bind_socket_or_die(server_fd, &address);
 
+	printf("Listening on port %d...", PORT);
+
 	if (listen(server_fd, 1024) < 0) {
 		perror("Error while listening to incoming connections");
 		exit(EXIT_FAILURE);
 	}
 
-	printf("Listening on port %d...", PORT);
 
 	for(;;){
 
 		struct sockaddr_in client_addr;
 		socklen_t client_address_len;
+		char client_address_ipv4[MAXADDRLEN-1];
 
 		client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_address_len);
+
+		get_client_address_or_die(client_address_ipv4, &client_addr, MAXADDRLEN);
+
+		printf("Client address: %s\n", client_address_ipv4);
 
 		if (client_fd < 0){
 			perror("Error while accepting incoming connection");
@@ -52,21 +57,11 @@ int main(int argc, char** argv){
 			exit(EXIT_FAILURE);
 		}
 
-		memset(line_buffer, 0, LINE_BUFFER_SIZE - 1);
-
 		printf("Connection accepted: %d", server_fd);
 
-		while((line = read(client_fd, line_buffer, LINE_BUFFER_SIZE - 1)) > 0){
-			//could log this in a file later
-			fprintf(stdout, "\n%s\n", line_buffer);
-			fflush(stdout);
+		handle_connection();
 
-			if (line_buffer[line-1] == '\n'){
-				break;
-			}
 
-			memset(line_buffer, 0, LINE_BUFFER_SIZE - 1);
-		}
 		if(line < 0){
 			perror("Error while reading from socket");
 			close(server_fd);
@@ -81,7 +76,7 @@ int main(int argc, char** argv){
 			exit(EXIT_FAILURE);
 		}
 
-		close(server_fd);
+		close(client_fd);
 	}
 
 
