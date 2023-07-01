@@ -1,4 +1,6 @@
 #include "webfunctions.h"
+#include "params.h"
+#include <string.h>
 
 int open_socket_or_die(){
 
@@ -42,7 +44,39 @@ void get_client_address_or_die(char* ipv4_destination_pointer, struct sockaddr_i
 		}
 }
 
-void handle_connection(){
+char* parse_url_file_request(char* request){
+  char* file_name;
+  FILE* file;
+
+  file_name = (char*)malloc(sizeof(char) * MAXPATHLEN + 1);
+
+  printf("Method: %s", strtok(request, " "));
+
+  file_name = strtok(NULL, " ");
+
+  //log error if file path is longer than 512 bytes
+  if(strlen(file_name) > MAXPATHLEN){
+    free(file_name);
+    return "-1";
+  }
+
+  printf("Path: %s", file_name);
+
+  //TODO: PASS THE REQUEST BODY TO THE HANDLE CONNECTION
+  //FUNCTION AND PUT THE FILE CONTENTS IN THE REQUEST BODY
+  if(strcmp(file_name, "/")){
+    file = fopen("index.html", "r");
+
+    if(file == NULL){
+      free(file_name);
+      return "-2";
+    }
+  }
+
+  return file_name;
+} 
+
+void handle_connection(int client_fd){
 	char line_buffer[LINE_BUFFER_SIZE];
 	int read_result;
 
@@ -50,10 +84,13 @@ void handle_connection(){
 
 	while((read_result = read(client_fd, line_buffer, LINE_BUFFER_SIZE - 1)) > 0){
 			//could log this in a file later
+      parse_url_file_request((char*)line_buffer);
+      if()
+
 			fprintf(stdout, "\n%s\n", line_buffer);
 			fflush(stdout);
 
-			if (line_buffer[line-1] == '\n'){
+			if (line_buffer[strlen(line_buffer)-1] == '\n'){
 				break;
 			}
 
@@ -61,3 +98,4 @@ void handle_connection(){
 		}
 
 }
+

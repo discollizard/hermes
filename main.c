@@ -59,8 +59,8 @@ int main(int argc, char** argv){
 
 		printf("Connection accepted: %d", server_fd);
 
-		handle_connection();
-
+		handle_connection(client_fd);
+    printf("%s", "oi");
 
 		if(line < 0){
 			perror("Error while reading from socket");
@@ -68,7 +68,10 @@ int main(int argc, char** argv){
 			exit(EXIT_FAILURE);
 		}
 
-		snprintf((char*)return_buffer, sizeof(return_buffer), "HTTP/1.0 200 OK \r\n\r\nAmo mickelly");
+    char* file_to_serve = parse_url_file_request((char*)&return_buffer);
+
+		// snprintf((char*)return_buffer, sizeof(return_buffer), "HTTP/1.0 200 OK \r\n\r\nAmo mickelly");
+    printf("%s", file_to_serve);
 
 		if((write(client_fd, (char*)return_buffer, strlen((char*)return_buffer))) < 0){
 			perror("Error while writing to socket");
