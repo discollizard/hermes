@@ -1,7 +1,7 @@
-CFLAGS = -g3 -o hermes.out
-FILES = main.c webfunctions.c debug.c data_structures.c 
+CFLAGS = -g3 -g -o
+FILES = main.c webfunctions.c debug.c
 
 all: final
 
 final:
-	gcc $(FILES) $(CFLAGS)
+	gcc $(FILES) $(CFLAGS) hermes.out

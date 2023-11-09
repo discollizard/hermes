@@ -1,4 +1,3 @@
-#include "data_structures.h"
 #include "debug.h"
 #include "params.h"
 #include "webfunctions.h"
@@ -41,12 +40,6 @@ int main(int argc, char **argv) {
   }
 
   for (;;) {
-
-    /* TESTING DATA STRUCTURES */
-    dynamic_array *test = init_array();
-    array_push(test, "tchurumelas");
-    fprintf(stdout, "size: %ld, count: %d", test->size, test->count);
-    /* /* TESTING DATA STRUCTURES */
 
         struct sockaddr_in client_addr;
     socklen_t client_address_len;

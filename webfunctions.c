@@ -95,14 +95,5 @@ void handle_connection(int client_fd) {
     /* DEBUG STUFF */
     /* parse_url_file_request((char *)line_buffer); */
     /* if () */
-
-    fprintf(stdout, "\n%s\n", line_buffer);
-    fflush(stdout);
-
-    if (line_buffer[strlen(line_buffer) - 1] == '\n') {
-      break;
-    }
-
-    memset(line_buffer, 0, LINE_BUFFER_SIZE - 1);
   }
 }
