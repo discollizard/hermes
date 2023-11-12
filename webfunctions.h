@@ -28,6 +28,7 @@ void handle_connection(void* client_fd);
 
 const char* get_mime_type(const char* file_extension);
 char* url_decode(char* url_encoded_file_name);
+void decode_url_param(char* file_name, const char* url_code, const char char_to_transform, char* last_half_of_path, int index, ssize_t file_name_length);
 const char* get_file_extension(const char* url);
 void build_http_response(const char* file_name, const char* file_ext, char* response, size_t* response_len);
 

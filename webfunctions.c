@@ -54,7 +54,9 @@ const char* get_mime_type(const char* file_extension){
         return "image/jpeg";
     }else if(strcmp(file_extension, "html") == 0){
         return "text/html";
-    } else if (strcmp(file_extension, "png") == 0) {
+    } else if(strcmp(file_extension, "css") == 0){
+        return "text/css";
+    }else if (strcmp(file_extension, "png") == 0) {
         return "image/png";
     } else if (strcmp(file_extension, "gif") == 0) {
         return "image/gif";
@@ -141,21 +143,53 @@ char* url_decode(char* url_encoded_file_name){
     if(url_encoded_file_name[i] == '%'){
       if(url_encoded_file_name[i+1] == '2'){
         if(url_encoded_file_name[i+2] == '0'){
-          url_encoded_file_name[i] = ' ';
-          int name_counter = 0;
-          for(int j = i + 3; j < file_name_length; j++){
-            last_half_of_path[name_counter] = url_encoded_file_name[j];
-            name_counter++;
-          }
-
-          url_encoded_file_name[i + 1] = '\0';
-          strcat(url_encoded_file_name, (const char*)last_half_of_path);
+          decode_url_param(url_encoded_file_name, "%20", ' ', last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '1'){
+          decode_url_param(url_encoded_file_name, "%21", '!' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '2'){
+          decode_url_param(url_encoded_file_name, "%22", '"' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '3'){
+          decode_url_param(url_encoded_file_name, "%23", '#' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '4'){
+          decode_url_param(url_encoded_file_name, "%24", '$' , last_half_of_path, i, file_name_length);
+        }else if(url_encoded_file_name[i+2] == '5'){
+          decode_url_param(url_encoded_file_name, "%25", '%' , last_half_of_path, i, file_name_length);
+        }else if(url_encoded_file_name[i+2] == '6'){
+          decode_url_param(url_encoded_file_name, "%26", '&' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '7'){
+          decode_url_param(url_encoded_file_name, "%27", '\'' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '8'){
+          decode_url_param(url_encoded_file_name, "%28", '(' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == '9'){
+          decode_url_param(url_encoded_file_name, "%29", ')' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == 'A'){
+          decode_url_param(url_encoded_file_name, "%2A", '*' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == 'B'){
+          decode_url_param(url_encoded_file_name, "%2B", '+' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == 'C'){
+          decode_url_param(url_encoded_file_name, "%2C", ',' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == 'E'){
+          decode_url_param(url_encoded_file_name, "%2E", '.' , last_half_of_path, i, file_name_length);
+        } else if(url_encoded_file_name[i+2] == 'F'){
+          decode_url_param(url_encoded_file_name, "%2F", '/' , last_half_of_path, i, file_name_length);
         }
       }
     }
   }
   free(last_half_of_path);
   return url_encoded_file_name;
+}
+
+void decode_url_param(char* file_name, const char* url_code, const char char_to_transform, char* last_half_of_path, int index, ssize_t file_name_length){
+  file_name[index] = char_to_transform;
+  int name_counter = 0;
+  for(int j = index + 3; j < file_name_length; j++){
+    last_half_of_path[name_counter] = file_name[j];
+    name_counter++;
+  }
+
+  file_name[index + 1] = '\0';
+  strcat(file_name, (const char*)last_half_of_path);
 }
 
 const char* get_file_extension(const char* url) {
@@ -192,6 +226,7 @@ void handle_connection(void* client_fd) {
       //extract filename from request and decode URL
       buffer[matches[1].rm_eo] = '\0';
       char *url_encoded_file_name = buffer + matches[1].rm_so;
+      printf("\n\n%s\n\n", url_encoded_file_name);
       char *file_name = url_decode(url_encoded_file_name);
 
       char file_ext[32];
