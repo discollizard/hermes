@@ -1,7 +1,7 @@
-CFLAGS = -g3 -g -o
+CFLAGS = -o
 FILES = main.c webfunctions.c debug.c
 
 all: final
 
 final:
-	gcc $(FILES) $(CFLAGS) hermes.out
+	mkdir -p /var/hermes/html && clang $(FILES) $(CFLAGS) hermes.out

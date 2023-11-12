@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <pthread.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -14,7 +15,6 @@ int main(int argc, char **argv) {
 
   int server_fd, client_fd, line;
   struct sockaddr_in address;
-  char return_buffer[LINE_BUFFER_SIZE];
 
   server_fd = open_socket_or_die();
 
@@ -58,9 +58,11 @@ int main(int argc, char **argv) {
       exit(EXIT_FAILURE);
     }
 
-    fprintf(stdout, "Connection accepted\n fd: %d\n", server_fd);
+    fprintf(stdout, "Connection accepted\n server_fd: %d, client_fd: %d\n", server_fd, client_fd);
 
-    handle_connection(client_fd);
+    pthread_t thread_id;
+    pthread_create(&thread_id, NULL, handle_connection, (void *)&client_fd);
+    pthread_detach(thread_id);
 
     if (line < 0) {
       perror("Error while reading from socket");
@@ -68,29 +70,8 @@ int main(int argc, char **argv) {
       exit(EXIT_FAILURE);
     }
 
-    /* char *file_to_serve = parse_url_file_request((char *)&return_buffer); */
-
-    // snprintf((char*)return_buffer, sizeof(return_buffer), "HTTP/1.0 200 OK
-    // \r\n\r\nAmo mickelly");
-    /* printf("%s", file_to_serve); */
-
-    if ((write(client_fd, (char *)return_buffer,
-               strlen((char *)return_buffer))) < 0) {
-      perror("Error while writing to socket");
-      close(server_fd);
-      exit(EXIT_FAILURE);
-    }
-
-    close(client_fd);
   }
 
   return 0;
 
-  // wait for socket connection
-  // when socket connects, return the page content
-  // when interrupted, exit gracefully
-  //
-  //
-
-  return 0;
 }

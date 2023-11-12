@@ -2,7 +2,7 @@
 #define PARAMS_H
 
 #define PORT 80
-#define LINE_BUFFER_SIZE 4096
+#define BUFFER_SIZE 8192000
 #define MAXADDRLEN 128
 #define MAXPATHLEN 512
 #define MAX_HTTP_HEADER_NAME_LEN 2048
@@ -11,6 +11,7 @@
 #define MAX_HTTP_BODY_NAME_LEN 2048
 #define MAX_HTTP_BODY_VALUE_LEN 2048
 #define MAX_HTTP_BODY_COUNT 100
+#define BASE_HTML_PATH "/var/hermes/html"
 
 typedef struct {
     char key[MAX_HTTP_HEADER_NAME_LEN];

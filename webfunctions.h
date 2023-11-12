@@ -7,11 +7,15 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <regex.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 #include <sys/socket.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
 
 int open_socket_or_die();
 void set_sock_opts_or_die(int socket_file_descriptor);
@@ -20,8 +24,12 @@ void get_client_address_or_die(char *ipv4_destination_pointer,
                                int max_buffer_size);
 void bind_socket_or_die(int socket_file_descriptor,
                         struct sockaddr_in *sock_struct);
-char *parse_url_file_request(char *request);
-void handle_connection(int client_fd);
+void handle_connection(void* client_fd);
+
+const char* get_mime_type(const char* file_extension);
+char* url_decode(char* url_encoded_file_name);
+const char* get_file_extension(const char* url);
+void build_http_response(const char* file_name, const char* file_ext, char* response, size_t* response_len);
 
 typedef struct {
   char name[MAX_HTTP_HEADER_NAME_LEN];   // okay, this could have any type, but

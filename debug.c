@@ -4,17 +4,18 @@
 #include <string.h>
 #include "params.h"
 
-void get_method(httpRequest** requestStruct, char* httpHead){
+void get_metadata(httpRequest** requestStruct, char* httpHead){
   strcpy((*requestStruct)->method, strtok(httpHead, " "));
   //checking for post body
     strcpy((*requestStruct)->path, strtok(NULL, " "));
     strcpy((*requestStruct)->version, strtok(NULL, " "));
 }
 
-void request_dissect(char *requestText) {
+ httpRequest* request_dissect(char *requestText) {
   time_t request_time = time(NULL);
   struct tm tm = *localtime(&request_time);
-  char* headerKVPair;
+  char *token;
+  char* requestMetadata;
   httpRequest *request = malloc(sizeof(httpRequest));
 
   fprintf(stdout, "Request accepted @ %d-%02d-%02d %02d:%02d:%02d \n",
@@ -23,17 +24,12 @@ void request_dissect(char *requestText) {
 
   fprintf(stdout, "Raw data: %s \n", requestText);
 
-  //headers
-  get_method(&request, strtok(requestText, "\n"));
-  fprintf(stdout, "\n\n Method: %s\n", request->method);
-  fprintf(stdout, "Path: %s\n", request->path);
-  fprintf(stdout, "HTTP version: %s\n", request->version);
+  get_metadata(&request, strtok(requestText, "\n"));
+  fprintf(stdout, "Method: %s \n", request->method);
+  fprintf(stdout, "HTTP Version: %s \n", request->version);
+  fprintf(stdout, "Path: %s \n", request->path);
 
-  fprintf(stdout, "\n\n Headers: \n");
-  while(headerKVPair = strtok(NULL, "\n")){
-    fprintf(stdout, " %s\n", headerKVPair);
-  }
+  //figure out the rest later
 
-  free(request);
+  return request;
 }
-
