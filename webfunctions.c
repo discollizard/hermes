@@ -84,6 +84,8 @@ void build_http_response(const char *file_name, const char* file_ext, char* resp
   char *header = (char *)malloc(BUFFER_SIZE * sizeof(char));
   const char *mime_type = get_mime_type(file_ext);
 
+    printf("\n\n %s \n\n", file_name);
+
     //404 if file doesnt exist
     int file_fd = open(file_name, O_RDONLY);
     if (file_fd == -1 && file_name[strlen(file_name) - 1] != '/'){
@@ -95,7 +97,6 @@ void build_http_response(const char *file_name, const char* file_ext, char* resp
         *response_len = strlen(response);
         return;
     } else if(file_name[strlen(file_name) - 1] == '/'){
-      //TOFIX: ALLOW INDEX SCANNING EVEN IF FILE NAME IS EMPTY
       strcat(file_name, "index.html");
       file_fd = open(file_name, O_RDONLY);
       if(file_fd == -1){
@@ -142,7 +143,7 @@ char* url_decode(char* url_encoded_file_name){
         if(url_encoded_file_name[i+2] == '0'){
           url_encoded_file_name[i] = ' ';
           int name_counter = 0;
-          for(int j = i + 2; j < file_name_length; j++){
+          for(int j = i + 3; j < file_name_length; j++){
             last_half_of_path[name_counter] = url_encoded_file_name[j];
             name_counter++;
           }
