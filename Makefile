@@ -1,5 +1,5 @@
-CFLAGS = -o
-FILES = main.c webfunctions.c debug.c
+CFLAGS = -g -o
+FILES = main.c webfunctions.c debug.c data_structures.c
 
 all: final
 

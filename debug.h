@@ -2,6 +2,7 @@
 #define debug_h
 #include "params.h"
 
-httpRequest* request_dissect(char *request);
+// print string
+void pstring(char *string);
 
 #endif

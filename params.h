@@ -14,23 +14,23 @@
 #define BASE_HTML_PATH "/var/hermes/html"
 
 typedef struct {
-    char key[MAX_HTTP_HEADER_NAME_LEN];
-    char value[MAX_HTTP_HEADER_VALUE_LEN];
+  char key[MAX_HTTP_HEADER_NAME_LEN];
+  char value[MAX_HTTP_HEADER_VALUE_LEN];
 } headerPair;
 
 typedef struct {
-    char key[MAX_HTTP_BODY_NAME_LEN];
-    char value[MAX_HTTP_BODY_VALUE_LEN];
+  char key[MAX_HTTP_BODY_NAME_LEN];
+  char value[MAX_HTTP_BODY_VALUE_LEN];
 } bodyPair;
 
 typedef struct {
-    char host[MAXADDRLEN];
-    char path[MAXPATHLEN];
-    char version[10];
-    char method[8];
-    headerPair headers[MAX_HTTP_HEADERS];
-    int headerCount;
-    bodyPair body[MAX_HTTP_BODY_COUNT];
+  char host[MAXADDRLEN];
+  char path[MAXPATHLEN];
+  char version[10];
+  char method[8];
+  headerPair headers[MAX_HTTP_HEADERS];
+  int headerCount;
+  bodyPair body[MAX_HTTP_BODY_COUNT];
 } httpRequest;
 
 #endif
