@@ -240,17 +240,13 @@ void parse_query_params(char *request) {
   uint64_t (*functionPtr)(const char *, size_t keylen);
   functionPtr = &func_hash;
 
-  hash_table *params = init_hash_table(10, functionPtr);
+  hash_table *params = init_hash_table(20, functionPtr);
   char *key = strtok(request, "=");
   char *value = strtok(NULL, "&");
-  pstring(key);
-  pstring(value);
   hash_table_insert(params, key, value);
   while (value != NULL) {
     key = strtok(NULL, "=");
     value = strtok(NULL, "&");
-    pstring(key);
-    pstring(value);
     hash_table_insert(params, key, value);
   }
   hash_table_print(params);
@@ -267,13 +263,13 @@ void handle_connection(void *client_fd) {
   }
   if (bytes_received > 0) {
     // GET requests
-    regex_t regex;
-    regcomp(&regex, "^GET /([^ ]*) HTTP/1", REG_EXTENDED);
+    regex_t regex_get;
+    regcomp(&regex_get, "^GET /([^ ]*) HTTP/1", REG_EXTENDED);
     regmatch_t matches[2];
 
     printf("%s", buffer);
 
-    if (regexec(&regex, buffer, 2, matches, 0) == 0) {
+    if (regexec(&regex_get, buffer, 2, matches, 0) == 0) {
       // extract filename from request and decode URL
       buffer[matches[1].rm_eo] = '\0';
       char *url_encoded_file_name = buffer + matches[1].rm_so;
@@ -285,7 +281,6 @@ void handle_connection(void *client_fd) {
       } else {
         file_name = url_decode(url_encoded_file_name);
       }
-      fflush(stdout);
 
       char file_ext[32];
       strcpy(file_ext, get_file_extension(file_name));
@@ -301,7 +296,7 @@ void handle_connection(void *client_fd) {
       free(response);
       // free(file_name);
     }
-    regfree(&regex);
+    regfree(&regex_get);
   }
   close(client_id);
   free(buffer);
